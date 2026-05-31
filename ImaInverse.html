@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ricerca Immagini Inversa</title>
+    
+    <!-- Tailwind CSS per il design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Cropper.js CSS per l'interfaccia di ritaglio -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css" xintegrity="sha512-cyzxRvewl+FOKTtpBzYjW6x6IA/T3y/02pbJvEfe2gL62w1zOWeQ52R+zD02y/rVWeK57xXy1x4E9oXw9v1r5Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: linear-gradient(rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0.8)), url('Sfondo1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        
+        /* Stile per la scrollbar per un look più moderno */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        /* Hover Drag & Drop adattato al tema dark */
+        .drag-active {
+            border-color: #22d3ee !important; /* cyan-400 */
+            background-color: rgba(55, 65, 81, 0.8) !important; /* gray-700/80 */
+        }
+
+        /* Loader spinner css adattato */
+        .loader {
+            border: 3px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            border-top: 3px solid #22d3ee;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Fix per limitare l'altezza del cropper */
+        .img-container {
+            max-height: 50vh; /* Limita l'altezza per schermi piccoli */
+            width: 100%;
+        }
+        /* Rendi invisibile l'immagine finché il cropper non è pronto */
+        #imagePreview {
+            display: block;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body class="text-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <!-- Wrapper per tenere allineati il bottone e il container -->
+    <div class="w-full max-w-xl">
+        
+        <!-- Pulsante Home posizionato SOPRA il container -->
+        <div class="mb-4 flex justify-start">
+            <a href="index.html" class="inline-flex items-center bg-gray-800/80 backdrop-blur-sm hover:bg-gray-700 text-gray-300 hover:text-cyan-400 font-semibold py-2 px-4 rounded-lg transition duration-200 shadow-md border border-gray-700 hover:border-cyan-500/50">
+                &larr; Home
+            </a>
+        </div>
+
+        <!-- Container con glassmorphism come su index.html -->
+        <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 sm:p-8 relative">
+            
+            <!-- Header senza bottone interno -->
+            <div class="relative flex flex-col items-center justify-center mb-6">
+                <div class="text-center w-full">
+                    <h1 class="text-3xl sm:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg mb-2">Ricerca Immagini Inversa</h1>
+                    <p class="text-gray-200 font-medium mt-2">Carica una foto per scoprire dove appare sul web.</p>
+                </div>
+            </div>
+
+            <!-- Area di Drop -->
+            <div id="dropzone" class="border-2 border-dashed border-gray-600 rounded-xl p-10 text-center cursor-pointer hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 group">
+                <svg class="mx-auto h-12 w-12 text-gray-400 group-hover:text-cyan-400 mb-4 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                <p class="text-base text-gray-300 font-medium mb-1">Trascina un'immagine qui</p>
+                <p class="text-sm text-gray-400">oppure <span class="text-cyan-400 font-semibold group-hover:underline">clicca per sfogliare</span></p>
+                <input type="file" id="mainFileInput" accept="image/*" class="hidden">
+            </div>
+
+            <!-- Area di Anteprima e Ritaglio -->
+            <div id="previewContainer" class="hidden flex-col items-center mt-4">
+                
+                <p class="text-sm text-cyan-300 mb-3 bg-cyan-900/30 px-3 py-1.5 rounded-full border border-cyan-800/50 flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                    Trascina i bordi per ritagliare, o cerca l'immagine intera
+                </p>
+
+                <div class="relative w-full mb-4 img-container bg-gray-900 rounded-lg overflow-hidden border border-gray-600 shadow-inner">
+                    <img id="imagePreview" src="" alt="Anteprima">
+                    <button onclick="resetApp()" class="absolute top-2 right-2 z-10 bg-gray-800 text-red-400 hover:text-white hover:bg-red-500 rounded-full p-1.5 shadow-lg transition-colors border border-gray-600" title="Annulla e carica altra immagine">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <p id="fileName" class="text-sm text-gray-400 mb-6 font-medium truncate max-w-full px-4"></p>
+
+                <div class="w-full flex flex-col sm:flex-row gap-4 justify-center">
+                    <!-- Bottone Google -->
+                    <button id="btnGoogle" onclick="searchImage('google')" class="flex-1 flex items-center justify-center gap-2 bg-gray-700 border border-gray-600 text-white font-semibold py-3 px-4 rounded-lg hover:bg-gray-600 hover:border-cyan-400 transition duration-300 focus:outline-none transform hover:scale-105 shadow-lg">
+                        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                            <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                            <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                            <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        </svg>
+                        <span>Cerca con Google</span>
+                    </button>
+
+                    <!-- Bottone TinEye -->
+                    <button id="btnTinEye" onclick="searchImage('tineye')" class="flex-1 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 focus:outline-none">
+                        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        <span>Cerca con TinEye</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div> <!-- Fine del wrapper principale -->
+
+    <!-- Importazione Cropper.js JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js" xintegrity="sha512-6lplKUSl86rUVprDIjiW8DuALkMczG80s8mK/6m//1iVwXk2zE01Q39x3E1bL3m/Z/3V5D6Dofm8R9X2p2D3QA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        // =========================================================================
+        // CHIAVE API DI IMGBB (api.imgbb.com)
+        // =========================================================================
+        const IMGBB_API_KEY = 'c5bdb465bfdc3a239bfcdaff28b75f8e'; 
+
+        const dropzone = document.getElementById('dropzone');
+        const mainInput = document.getElementById('mainFileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const fileNameDisplay = document.getElementById('fileName');
+        
+        let currentFile = null;
+        let cropper = null; // Variabile per mantenere l'istanza di Cropper.js
+
+        // Gestione UI selezione file
+        dropzone.addEventListener('click', () => mainInput.click());
+
+        mainInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) processFile(e.target.files[0]);
+        });
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('drag-active');
+        });
+
+        dropzone.addEventListener('dragleave', () => dropzone.classList.remove('drag-active'));
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('drag-active');
+            if (e.dataTransfer.files.length > 0) processFile(e.dataTransfer.files[0]);
+        });
+
+        function processFile(file) {
+            if (!file.type.startsWith('image/')) {
+                alert("Per favore, seleziona un'immagine valida.");
+                return;
+            }
+
+            currentFile = file;
+            const reader = new FileReader();
+            
+            reader.onload = (e) => {
+                // Imposta l'immagine per il cropper
+                imagePreview.src = e.target.result;
+                fileNameDisplay.textContent = file.name;
+                
+                // Gestione visibilità sezioni
+                dropzone.classList.add('hidden');
+                previewContainer.classList.remove('hidden');
+                previewContainer.classList.add('flex');
+
+                // Distruggi vecchia istanza se esiste (nel caso di ricaricamenti)
+                if (cropper) {
+                    cropper.destroy();
+                }
+
+                // Inizializza Cropper.js
+                cropper = new Cropper(imagePreview, {
+                    viewMode: 1,           // Limita la selezione all'interno dell'immagine
+                    dragMode: 'crop',      // Permetti di creare nuove selezioni trascinando
+                    autoCropArea: 1,       // Seleziona di default tutta l'immagine (1 = 100%)
+                    responsive: true,
+                    background: false,     // Nasconde il pattern a quadretti per un look più pulito
+                    zoomable: false,       // Disattiva lo zoom con la rotellina per evitare fastidi su scroll
+                });
+            };
+            
+            reader.readAsDataURL(file);
+        }
+
+        // Funzione per ottenere la porzione ritagliata come Blob (File)
+        function getCroppedImageBlob() {
+            return new Promise((resolve) => {
+                if (!cropper) resolve(null);
+                
+                // Ottieni il canvas del ritaglio
+                const canvas = cropper.getCroppedCanvas({
+                    maxWidth: 4096,
+                    maxHeight: 4096 // Limita la dimensione massima per evitare errori di memoria
+                });
+
+                // Converti il canvas in un file Blob da inviare
+                canvas.toBlob((blob) => {
+                    resolve(blob);
+                }, 'image/jpeg', 0.9); // Qualità JPEG al 90%
+            });
+        }
+
+        // Logica di caricamento e ricerca
+        async function searchImage(engine) {
+            if (!cropper) return;
+
+            if (IMGBB_API_KEY === 'INSERISCI_QUI_LA_TUA_CHIAVE') {
+                alert("Devi prima inserire la tua chiave API di ImgBB nel codice HTML per far funzionare la ricerca!");
+                return;
+            }
+
+            // Cambia stato dei bottoni
+            const btn = engine === 'google' ? document.getElementById('btnGoogle') : document.getElementById('btnTinEye');
+            const originalContent = btn.innerHTML;
+            btn.innerHTML = '<div class="loader"></div> <span class="text-white">Caricamento...</span>';
+            btn.disabled = true;
+
+            // Apriamo subito la scheda per evitare il blocco popup del browser
+            const searchTab = window.open('', '_blank');
+            searchTab.document.write('<body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#e5e7eb;background:#111827;"><h2>Elaborazione e caricamento del ritaglio in corso, attendi...</h2></body>');
+
+            try {
+                // Otteniamo il Blob dell'immagine RITAGLIATA (o intera se non toccata)
+                const imageBlobToUpload = await getCroppedImageBlob();
+
+                // Prepariamo l'immagine per ImgBB
+                const formData = new FormData();
+                // Passiamo il blob nominandolo come se fosse un file generico
+                formData.append('image', imageBlobToUpload, 'cropped-search.jpg');
+                formData.append('key', IMGBB_API_KEY);
+
+                // Effettuiamo l'upload invisibile su ImgBB
+                const response = await fetch('https://api.imgbb.com/1/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+
+                if (data.success) {
+                    // Otteniamo l'URL pubblico dell'immagine caricata
+                    const imageUrl = encodeURIComponent(data.data.url);
+                    
+                    // Reindirizziamo la nuova scheda al motore di ricerca corretto
+                    if (engine === 'google') {
+                        searchTab.location.href = `https://lens.google.com/uploadbyurl?url=${imageUrl}`;
+                    } else if (engine === 'tineye') {
+                        searchTab.location.href = `https://tineye.com/search?url=${imageUrl}`;
+                    }
+                } else {
+                    searchTab.close();
+                    alert("Errore durante il caricamento dell'immagine. Verifica la chiave API.");
+                }
+            } catch (error) {
+                searchTab.close();
+                console.error("Errore:", error);
+                alert("Si è verificato un errore di elaborazione o di rete.");
+            } finally {
+                // Ripristiniamo il bottone
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+            }
+        }
+
+        function resetApp() {
+            // Distrugge l'istanza di cropper per pulire la memoria
+            if (cropper) {
+                cropper.destroy();
+                cropper = null;
+            }
+            
+            currentFile = null;
+            mainInput.value = '';
+            imagePreview.src = ''; // Pulisce il source
+            previewContainer.classList.add('hidden');
+            previewContainer.classList.remove('flex');
+            dropzone.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>

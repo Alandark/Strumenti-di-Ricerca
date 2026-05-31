@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ricerca Avanzata Server & IP</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: linear-gradient(rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0.8)), url('Sfondo1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        
+        /* Stile per la scrollbar per un look più moderno */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+
+        /* Animazioni personalizzate per l'interfaccia a step */
+        .step-enter {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fade-in-up 0.6s ease-out forwards;
+        }
+        
+        @keyframes fade-in-up {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .loader {
+            border: 3px solid #1f2937; /* gray-800 */
+            border-bottom-color: #22d3ee; /* cyan-400 */
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="text-gray-200 min-h-screen p-4 md:p-8 relative">
+
+    <div class="max-w-3xl mx-auto relative z-10">
+        <!-- Pulsante Torna alla Home -->
+        <div class="mb-6">
+            <a href="index.html" class="inline-flex items-center gap-2 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 px-4 py-2 rounded-lg transition-all font-semibold shadow-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Torna alla Home
+            </a>
+        </div>
+
+        <!-- Intestazione -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg mb-3">Localizzatore Server & IP</h1>
+            <p class="text-gray-300 drop-shadow-md font-medium text-base md:text-lg">Tool di ricerca avanzata per analizzare DNS, estrapolare Nameserver e localizzare i server.</p>
+        </header>
+
+        <!-- Area di Input Principale -->
+        <div id="mainInputArea" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 mb-8 relative overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-blue-500"></div>
+            <div class="flex justify-between items-start mb-2">
+                <h2 class="text-xl font-bold text-cyan-300 drop-shadow-md mt-1">Inizia la Ricerca</h2>
+                <button onclick="resetApp()" id="topResetBtn" class="hidden flex items-center gap-2 text-sm bg-gray-700 hover:bg-gray-600 text-gray-300 px-3 py-1.5 rounded-lg transition-colors font-semibold border border-gray-600 shadow-sm" type="button" title="Azzera la ricerca attuale">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Nuova Ricerca
+                </button>
+            </div>
+            <p class="text-sm text-gray-400 mb-4">Inserisci l'URL del sito web che desideri analizzare. Il sistema avvierà automaticamente un processo guidato.</p>
+            
+            <form id="searchForm" class="flex flex-col sm:flex-row gap-3">
+                <input 
+                    type="text" 
+                    id="urlInput" 
+                    placeholder="es. www.esempio.it oppure https://esempio.com" 
+                    class="flex-1 bg-gray-900 border border-gray-600 text-white rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200"
+                    required
+                >
+                <button 
+                    type="submit" 
+                    id="submitBtn"
+                    class="bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors flex justify-center items-center gap-2 shadow-lg"
+                >
+                    <span>Analizza Sito</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21 21-6-6m2-5a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg>
+                </button>
+            </form>
+            <div id="inputError" class="text-red-400 text-sm mt-2 hidden">Per favore, inserisci un URL valido.</div>
+        </div>
+
+        <!-- Contenitore degli Step (Inizialmente nascosto) -->
+        <div id="stepsContainer" class="space-y-6 hidden">
+            
+            <!-- TITOLO STEP 1 -->
+            <div id="step1Header" class="border-b border-gray-700 pb-2 step-enter">
+                <h2 class="text-2xl font-bold text-gray-200">Step 1</h2>
+            </div>
+
+            <!-- STEP 1: WHOIS & Nameservers -->
+            <div id="step1" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 step-enter">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-cyan-900 border border-cyan-500 text-cyan-300 font-bold w-8 h-8 rounded-full flex items-center justify-center">1</div>
+                    <h3 class="text-xl font-bold text-cyan-300 drop-shadow-md">Ricerca WHOIS & Nameservers</h3>
+                </div>
+                
+                <div class="bg-gray-900/80 p-4 rounded-lg mb-4 text-sm text-gray-300 border border-gray-700">
+                    <strong class="text-cyan-400">Cosa succede ora:</strong> Il sistema sta estrapolando i Nameserver tramite interrogazione DNS. Potrai anche consultare i dati completi su WHOIS.
+                </div>
+
+                <div id="step1-loading" class="flex items-center gap-3 text-gray-400 py-4">
+                    <span class="loader w-5 h-5"></span> Estrapolazione Nameservers in corso...
+                </div>
+
+                <div id="step1-result" class="hidden">
+                    <div class="mb-2 text-sm font-medium text-gray-400">Nameservers Rilevati:</div>
+                    <div id="nsContainer" class="flex flex-col gap-2">
+                        <!-- I risultati NS singoli appariranno qui -->
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-gray-700">
+                        <a id="whoisLink" href="#" target="_blank" class="inline-flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-gray-200 font-semibold px-4 py-2 rounded-lg transition-colors text-sm w-full sm:w-auto">
+                            <span>Apri risultati completi su WHOIS</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2: Risoluzione IP -->
+            <div id="step2" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 hidden step-enter" style="animation-delay: 0.2s;">
+                <div class="flex items-center gap-3 mb-4">
+                    <div class="bg-cyan-900 border border-cyan-500 text-cyan-300 font-bold w-8 h-8 rounded-full flex items-center justify-center">2</div>
+                    <h3 class="text-xl font-bold text-cyan-300 drop-shadow-md">Risoluzione Indirizzo IP</h3>
+                </div>
+                
+                <div class="bg-gray-900/80 p-4 rounded-lg mb-4 text-sm text-gray-300 border border-gray-700">
+                    <strong class="text-cyan-400">Processo in corso:</strong> Il tool sta convertendo il nome a dominio nell'indirizzo IP numerico del server host.
+                </div>
+
+                <div id="step2-loading" class="flex items-center gap-3 text-gray-400 py-4">
+                    <span class="loader w-5 h-5"></span> Individuazione IP...
+                </div>
+
+                <div id="step2-result" class="hidden">
+                    <div class="mb-2 text-sm font-medium text-gray-400">Indirizzo IP del Server:</div>
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <div class="flex-1 bg-gray-900 border border-gray-600 rounded-lg p-3 font-mono text-sm break-all text-cyan-300 font-bold" id="ipOutput">
+                            <!-- IP result will appear here -->
+                        </div>
+                        <button onclick="copyToClipboard('ipOutput', 'ipCopyMsg')" class="flex items-center justify-center gap-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold px-4 py-2 rounded-lg transition-colors group">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                            Copia
+                        </button>
+                    </div>
+                    <p id="ipCopyMsg" class="text-green-400 text-xs mt-2 hidden transition-opacity">Copiato negli appunti!</p>
+                </div>
+            </div>
+
+            <!-- TITOLO STEP 2 E CONTENITORE TRACEROUTE -->
+            <div id="step2MainHeader" class="border-b border-gray-700 pb-2 pt-4 hidden step-enter" style="animation-delay: 0.4s;">
+                <h2 class="text-2xl font-bold text-gray-200">Step 2</h2>
+            </div>
+
+            <div id="step2Container" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 hidden step-enter" style="animation-delay: 0.5s;">
+                <div class="bg-gray-900/80 p-4 rounded-lg mb-6 text-sm text-gray-300 border border-gray-700">
+                    <strong class="text-cyan-400">Tracciamento (Traceroute):</strong> In questa sezione andiamo a tracciare i Nameserver e l'IP rilevati.<br><br>
+                    <span class="text-cyan-300 font-medium">Come procedere:</span> Clicca sul pulsante per copiare l'indirizzo. Incollalo sul sito esterno e clicca "Run Traceroute".
+                </div>
+                
+                <div id="tracerouteCardsContainer" class="space-y-4">
+                    <!-- Javascript inietterà le caselle qui dinamicamente -->
+                </div>
+            </div>
+
+            <!-- Pulsanti di Azioni Finali -->
+            <div id="advSearchContainer" class="hidden step-enter w-full" style="animation-delay: 0.55s;">
+                <!-- NUOVO TITOLO STEP 3 -->
+                <div class="border-b border-gray-700 pb-2 pt-4 mb-6">
+                    <h2 class="text-2xl font-bold text-gray-200">Step 3</h2>
+                </div>
+                <!-- Contenitore dei bottoni -->
+                <div class="flex flex-col sm:flex-row justify-center flex-wrap gap-4 pb-4">
+                    <button onclick="toggleAdvancedSearch()" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white px-6 py-4 rounded-xl transition-all text-base sm:text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+                        Ricerca Avanzata
+                    </button>
+                    <button onclick="openTracerouteDirectly()" class="inline-flex items-center justify-center gap-3 bg-gray-700 hover:bg-gray-600 border border-gray-600 text-white px-6 py-4 rounded-xl transition-all text-base sm:text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h10"/><path d="m9 9 3 3-3 3"/><path d="M22 12h-6"/></svg>
+                        Usa Traceroute
+                    </button>
+                    <button onclick="openGeolocalization()" class="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white px-6 py-4 rounded-xl transition-all text-base sm:text-lg font-bold shadow-lg hover:shadow-xl hover:-translate-y-1 w-full sm:w-auto">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3"/><path d="M12 21c-4-4-8-8.5-8-12a8 8 0 0 1 16 0c0 3.5-4 8-8 12Z"/></svg>
+                        Geolocalizzazione Server
+                    </button>
+                </div>
+            </div>
+
+            <!-- Schede nascoste -->
+            <div id="advancedSearchCard" class="bg-gray-800/80 rounded-2xl shadow-lg border border-purple-500/30 p-6 hidden step-enter">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-purple-400"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.9 1.2 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg>
+                    <h3 class="text-lg font-bold text-purple-300">Ricerca Avanzata DNS</h3>
+                </div>
+                <p class="text-sm text-gray-300 mb-4">
+                    Questa sezione ti permette di effettuare un controllo completo di tutti i record DNS associati al dominio. Apri DNSChecker, incolla il dominio e clicca <strong>"Lookup DNS"</strong>.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="advDomainInput" class="flex-1 bg-gray-900 border border-gray-600 rounded-lg text-gray-200 font-mono text-sm p-3 focus:outline-none cursor-default" readonly>
+                    <button type="button" onclick="openDnsChecker('advCopyMsg')" class="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-2.5 rounded-lg transition-colors text-sm font-bold w-full sm:w-auto shadow-sm shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        Apri DNSChecker
+                    </button>
+                </div>
+                <p id="advCopyMsg" class="text-green-400 text-xs mt-2 hidden transition-opacity font-medium">Dominio copiato negli appunti!</p>
+            </div>
+
+            <!-- Pulsanti Reset e Home -->
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-6 hidden step-enter" id="resetContainer" style="animation-delay: 0.6s;">
+                <button onclick="resetApp()" class="inline-flex items-center justify-center gap-2 text-sm bg-gray-700 hover:bg-gray-600 text-white px-6 py-2.5 rounded-lg transition-colors font-bold shadow-sm w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                    Nuova Ricerca
+                </button>
+                <a href="index.html" class="inline-flex items-center justify-center gap-2 text-sm bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white px-6 py-2.5 rounded-lg transition-all font-bold shadow-sm w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Torna alla Home
+                </a>
+            </div>
+
+        </div>
+
+        <!-- PAGINA GEOLOCALIZZAZIONE (Inizialmente nascosta) -->
+        <div id="geolocalizationPage" class="hidden step-enter">
+            
+            <div class="flex flex-wrap gap-3 mb-6">
+                <button onclick="goBackToMain()" class="inline-flex items-center gap-2 text-sm bg-gray-700 border border-gray-600 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition-colors font-semibold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    Torna Indietro
+                </button>
+                <a href="index.html" class="inline-flex items-center justify-center gap-2 text-sm bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg transition-all font-bold shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Torna alla Home
+                </a>
+            </div>
+
+            <!-- IMMAGINE TUTORIAL -->
+            <div class="mb-6 rounded-2xl shadow-lg border border-gray-700 bg-gray-800/50 backdrop-blur-sm overflow-hidden">
+                <div class="bg-gray-900/80 px-4 py-3 border-b border-gray-700 flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-cyan-400"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                    <h4 class="text-sm font-bold text-cyan-300">Guida Rapida</h4>
+                </div>
+                <div class="p-2">
+                    <img src="istruzioni 1.png" alt="Tutorial di istruzioni per la geolocalizzazione" class="w-full h-auto rounded-xl border border-gray-600 opacity-90" onerror="this.onerror=null; this.src='https://placehold.co/800x400/1f2937/9ca3af?text=[Immagine+di+Tutorial+Istruzioni]';">
+                </div>
+            </div>
+
+            <div class="bg-gray-800/80 rounded-2xl shadow-lg border border-emerald-500/30 p-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-emerald-400"><circle cx="12" cy="10" r="3"/><path d="M12 21c-4-4-8-8.5-8-12a8 8 0 0 1 16 0c0 3.5-4 8-8 12Z"/></svg>
+                    <h3 class="text-lg font-bold text-emerald-300">Geolocalizzazione Server</h3>
+                </div>
+                <p class="text-sm text-gray-300 mb-4">
+                    Usa l'indirizzo IP del server per estrapolare i dati esatti di <strong>Latitudine e Longitudine</strong>. Copia l'IP e incollalo nel Localizzatore.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="geoIpInput" class="flex-1 bg-gray-900 border border-gray-600 rounded-lg text-gray-200 font-mono text-sm p-3 focus:outline-none cursor-default" readonly>
+                    <button type="button" onclick="openIpLocation('geoCopyMsg')" class="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg transition-colors text-sm font-bold w-full sm:w-auto shadow-sm shrink-0">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                        Copia e apri Localizzatore IP
+                    </button>
+                </div>
+                <p id="geoCopyMsg" class="text-green-400 text-xs mt-2 hidden transition-opacity font-medium">IP copiato negli appunti! Ora incollalo sul sito.</p>
+            </div>
+
+            <!-- SEZIONE: MAPPA E COORDINATE -->
+            <div class="bg-gray-800/80 rounded-2xl shadow-lg border border-blue-500/30 p-6 mt-6">
+                <div class="flex items-center gap-2 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-400"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" y1="3" x2="9" y2="18"/><line x1="15" y1="6" x2="15" y2="21"/></svg>
+                    <h3 class="text-lg font-bold text-blue-300">Latitudine e Longitudine</h3>
+                </div>
+                <p class="text-sm text-gray-300 mb-4">
+                    Incolla qui i dati di posizione ottenuti. Il sistema estrarrà in automatico solo i numeri formattati per la mappa.
+                </p>
+                <div class="flex flex-col mb-4">
+                    <input type="text" id="geoCoordsInput" oninput="cleanCoordinates(this)" placeholder="Incolla i dati di posizione qui..." class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 text-white font-mono text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                </div>
+                
+                <button type="button" onclick="openGoogleMaps()" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-xl transition-all text-base font-bold shadow-md hover:shadow-lg w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                    Traccia su Google Maps
+                </button>
+            </div>
+            
+            <!-- Pulsanti Torna Indietro e Torna alla Home a fondo pagina -->
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mt-8">
+                <button onclick="goBackToMain()" class="inline-flex items-center justify-center gap-2 text-sm bg-gray-700 border border-gray-600 hover:bg-gray-600 text-white px-6 py-3 rounded-xl transition-colors font-bold shadow-lg hover:shadow-xl w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                    Torna Indietro
+                </button>
+                <a href="index.html" class="inline-flex items-center justify-center gap-2 text-sm bg-gray-800 border border-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-xl transition-all font-bold shadow-lg hover:shadow-xl w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    Torna alla Home
+                </a>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // Variabile globale per mantenere in memoria il dominio correntemente analizzato
+        let currentDomain = '';
+        let currentIp = '';
+
+        // Funzione per pulire l'URL e ottenere solo il dominio
+        function cleanDomain(url) {
+            let domain = url.toLowerCase().trim();
+            if (domain.indexOf("://") > -1) {
+                domain = domain.split('/')[2];
+            } else {
+                domain = domain.split('/')[0];
+            }
+            domain = domain.replace(/^www\./, ''); 
+            domain = domain.split(':')[0];
+            domain = domain.split('?')[0].split('#')[0];
+            return domain;
+        }
+
+        // Gestione del form
+        document.getElementById('searchForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const rawUrl = document.getElementById('urlInput').value;
+            const domain = cleanDomain(rawUrl);
+            const errorDiv = document.getElementById('inputError');
+
+            if (!domain || !domain.includes('.')) {
+                errorDiv.classList.remove('hidden');
+                return;
+            }
+            
+            errorDiv.classList.add('hidden');
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').classList.add('opacity-70', 'cursor-not-allowed');
+
+            startProcess(domain);
+        });
+
+        // Logica principale a Step
+        async function startProcess(domain) {
+            currentDomain = domain; // Salva il dominio in memoria
+            currentIp = ''; // Reset IP globale
+            let extractedNs = [];
+            let extractedIp = null;
+
+            document.getElementById('stepsContainer').classList.remove('hidden');
+            
+            ['step1Header', 'step1', 'step2', 'step2MainHeader', 'step2Container', 'advSearchContainer', 'resetContainer', 'topResetBtn'].forEach(id => {
+                document.getElementById(id).classList.remove('hidden');
+            });
+            ['step1-result', 'step2-result', 'advancedSearchCard', 'geolocalizationPage'].forEach(id => {
+                const el = document.getElementById(id);
+                if (el) el.classList.add('hidden');
+            });
+            ['step1-loading', 'step2-loading'].forEach(id => {
+                document.getElementById(id).classList.remove('hidden');
+            });
+
+            // STEP 1: Ottieni Nameservers e prepara link WHOIS
+            document.getElementById('whoisLink').href = `https://www.whois.com/whois/${domain}`;
+
+            try {
+                const nsResponse = await fetch(`https://dns.google/resolve?name=${domain}&type=NS`);
+                const nsData = await nsResponse.json();
+                
+                document.getElementById('step1-loading').classList.add('hidden');
+                document.getElementById('step1-result').classList.remove('hidden');
+
+                let nsRecords = [];
+                const targetName = domain + '.';
+
+                // Assicuriamoci di prendere i record NS SOLO per il dominio richiesto e non per il TLD
+                if (nsData.Answer) {
+                    nsRecords = nsData.Answer.filter(r => r.type === 2 && (r.name.toLowerCase() === domain || r.name.toLowerCase() === targetName));
+                }
+                if (nsRecords.length === 0 && nsData.Authority) {
+                    nsRecords = nsData.Authority.filter(r => r.type === 2 && (r.name.toLowerCase() === domain || r.name.toLowerCase() === targetName));
+                }
+
+                const nsContainer = document.getElementById('nsContainer');
+                nsContainer.innerHTML = '';
+
+                if (nsRecords && nsRecords.length > 0) {
+                    const uniqueNs = [...new Set(nsRecords.map(r => r.data.replace(/\.$/, '')))];
+                    extractedNs = uniqueNs; // Salva per lo Step 2
+                    
+                    uniqueNs.forEach((ns, index) => {
+                        const nsId = `ns-copy-msg-${index}`;
+                        const div = document.createElement('div');
+                        div.className = "flex items-center justify-between bg-gray-900 border border-gray-700 rounded-lg p-3";
+                        div.innerHTML = `
+                            <span class="font-mono text-sm text-cyan-200 break-all font-bold">${ns}</span>
+                            <div class="flex items-center gap-3">
+                                <span id="${nsId}" class="text-green-400 text-xs hidden font-medium transition-opacity">Copiato!</span>
+                                <button onclick="copyTextDirectly('${ns}', '${nsId}')" class="flex items-center justify-center bg-gray-700 hover:bg-gray-600 text-gray-200 p-2 rounded transition-colors group shadow-sm" title="Copia questo Nameserver">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:scale-110 transition-transform"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                </button>
+                            </div>
+                        `;
+                        nsContainer.appendChild(div);
+                    });
+                } else {
+                    nsContainer.innerHTML = '<div class="text-gray-400 text-sm p-3 bg-gray-900 rounded-lg">Nameservers non trovati per questo dominio esatto.</div>';
+                }
+            } catch (error) {
+                document.getElementById('step1-loading').classList.add('hidden');
+                document.getElementById('step1-result').classList.remove('hidden');
+                document.getElementById('nsContainer').innerHTML = '<div class="text-red-400 text-sm p-3 bg-red-900/50 border border-red-800 rounded-lg">Errore durante il recupero dei Nameservers.</div>';
+            }
+
+            // STEP 2: Risoluzione IP
+            await new Promise(r => setTimeout(r, 800));
+            
+            let serverIp = null;
+            try {
+                const ipResponse = await fetch(`https://dns.google/resolve?name=${domain}&type=A`);
+                const ipData = await ipResponse.json();
+                
+                document.getElementById('step2-loading').classList.add('hidden');
+                document.getElementById('step2-result').classList.remove('hidden');
+
+                if (ipData.Answer && ipData.Answer.length > 0) {
+                    const recordA = ipData.Answer.find(r => r.type === 1); 
+                    if (recordA) {
+                        serverIp = recordA.data;
+                        extractedIp = serverIp; // Salva per lo Step 2
+                        currentIp = serverIp; // Salva nella variabile globale
+                        document.getElementById('ipOutput').innerText = serverIp;
+                    } else {
+                        document.getElementById('ipOutput').innerText = "Indirizzo IPv4 non trovato.";
+                    }
+                } else {
+                    document.getElementById('ipOutput').innerText = "Impossibile risolvere l'IP.";
+                }
+            } catch (error) {
+                document.getElementById('step2-loading').classList.add('hidden');
+                document.getElementById('step2-result').classList.remove('hidden');
+                document.getElementById('ipOutput').innerText = "Errore durante la risoluzione IP.";
+            }
+
+            // Costruisci lo Step 2 dinamicamente
+            buildStep2(extractedIp, extractedNs);
+        }
+
+        // Costruisce l'ordine per lo step 2 (Prima NS, poi IP)
+        function buildStep2(ip, nsList) {
+            const container = document.getElementById('tracerouteCardsContainer');
+            container.innerHTML = '';
+            
+            let traceItems = [];
+            
+            if (nsList && nsList.length > 0) {
+                nsList.forEach(ns => traceItems.push({ type: 'Nameserver', value: ns }));
+            }
+            if (ip) {
+                traceItems.push({ type: 'Indirizzo IP', value: ip });
+            }
+
+            if (traceItems.length === 0) {
+                container.innerHTML = '<div class="text-gray-400 italic p-4 bg-gray-900 rounded-lg border border-gray-700">Nessun dato valido rilevato per il tracciamento.</div>';
+            } else {
+                traceItems.forEach((item, index) => {
+                    const count = index + 1;
+                    const inputId = `trace-input-${count}`;
+                    const msgId = `trace-msg-${count}`;
+                    
+                    const div = document.createElement('div');
+                    div.className = 'border border-gray-700 rounded-lg p-5 bg-gray-800/80 shadow-sm';
+                    div.innerHTML = `
+                        <label class="block text-sm font-bold text-cyan-300 mb-3">${count}. ${item.type}</label>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <input type="text" id="${inputId}" value="${item.value}" class="flex-1 p-3 bg-gray-900 border border-gray-600 rounded-lg text-gray-200 font-mono text-sm focus:outline-none cursor-default" readonly>
+                            <button type="button" onclick="copyAndGo('${item.value}', '${msgId}')" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white px-6 py-2.5 rounded-lg transition-colors text-sm font-bold w-full sm:w-auto shadow-sm shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                                Copia e vai al tracciamento
+                            </button>
+                        </div>
+                        <p id="${msgId}" class="text-green-400 text-xs mt-2 hidden transition-opacity font-medium">Copiato negli appunti! Ora puoi incollarlo sul sito.</p>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        function copyAndGo(valueToTrace, msgId) {
+            const textArea = document.createElement("textarea");
+            textArea.value = valueToTrace;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const msgEl = document.getElementById(msgId);
+                if (msgEl) {
+                    msgEl.classList.remove('hidden');
+                    setTimeout(() => { msgEl.classList.add('hidden'); }, 4000);
+                }
+            } catch (e) {
+                console.error("Copia fallita", e);
+            }
+            document.body.removeChild(textArea);
+
+            window.open('https://traceroute-online.com/', '_blank');
+        }
+
+        // --- Funzioni per i pulsanti finali ---
+        function toggleAdvancedSearch() {
+            const card = document.getElementById('advancedSearchCard');
+            if (card.classList.contains('hidden')) {
+                card.classList.remove('hidden');
+                document.getElementById('advDomainInput').value = currentDomain;
+                setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+            } else {
+                card.classList.add('hidden');
+            }
+        }
+
+        function openDnsChecker(msgId) {
+            const textArea = document.createElement("textarea");
+            textArea.value = currentDomain;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const msgEl = document.getElementById(msgId);
+                if (msgEl) {
+                    msgEl.classList.remove('hidden');
+                    setTimeout(() => { msgEl.classList.add('hidden'); }, 4000);
+                }
+            } catch (e) { }
+            document.body.removeChild(textArea);
+
+            window.open(`https://dnschecker.org/all-dns-records-of-domain.php?query=${currentDomain}&rtype=ALL&dns=google`, '_blank');
+        }
+
+        function openTracerouteDirectly() {
+            window.open('https://traceroute-online.com/', '_blank');
+        }
+
+        // Funzione per la Geolocalizzazione come pagina separata
+        function openGeolocalization() {
+            // Nascondi l'interfaccia principale
+            document.getElementById('mainInputArea').classList.add('hidden');
+            document.getElementById('stepsContainer').classList.add('hidden');
+            
+            // Mostra la nuova pagina
+            const page = document.getElementById('geolocalizationPage');
+            page.classList.remove('hidden');
+            
+            // Precompila l'IP
+            document.getElementById('geoIpInput').value = currentIp || 'Indirizzo IP non disponibile';
+            
+            // Torna in cima alla pagina per una visuale pulita
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function goBackToMain() {
+            // Nascondi la pagina geolocalizzazione
+            document.getElementById('geolocalizationPage').classList.add('hidden');
+            
+            // Ripristina l'interfaccia principale
+            document.getElementById('mainInputArea').classList.remove('hidden');
+            document.getElementById('stepsContainer').classList.remove('hidden');
+        }
+
+        function openIpLocation(msgId) {
+            const ipToLocate = document.getElementById('geoIpInput').value.trim();
+            if (!ipToLocate || ipToLocate === 'Indirizzo IP non disponibile') return;
+            
+            const textArea = document.createElement("textarea");
+            textArea.value = ipToLocate;
+            textArea.style.position = "fixed";
+            textArea.style.opacity = "0";
+            document.body.appendChild(textArea);
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+                const msgEl = document.getElementById(msgId);
+                if (msgEl) {
+                    msgEl.classList.remove('hidden');
+                    setTimeout(() => { msgEl.classList.add('hidden'); }, 4000);
+                }
+            } catch (e) {
+                console.error("Copia fallita", e);
+            }
+            document.body.removeChild(textArea);
+
+            window.open('https://dnschecker.org/ip-location.php', '_blank');
+        }
+
+        // --- NUOVE FUNZIONI PER MAPPA E COORDINATE ---
+        function cleanCoordinates(inputEl) {
+            const val = inputEl.value;
+            // Estrae automaticamente i numeri decimali, supportando anche coordinate negative
+            const matches = val.match(/-?\d+\.\d+/g);
+            if (matches && matches.length >= 2) {
+                // Formatta con la virgola: è il formato ideale per la ricerca su Google Maps
+                inputEl.value = `${matches[0]}, ${matches[1]}`;
+            }
+        }
+
+        function openGoogleMaps() {
+            const coords = document.getElementById('geoCoordsInput').value.trim();
+            if (!coords) {
+                alert("Inserisci prima le coordinate nell'apposita casella!");
+                return;
+            }
+            
+            let query = encodeURIComponent(coords);
+            const matches = coords.match(/-?\d+\.\d+/g);
+            // Se le coordinate sono presenti, forza il tracciamento diretto tramite API Maps
+            if (matches && matches.length >= 2) {
+                query = `${matches[0]},${matches[1]}`;
+            }
+            
+            window.open(`https://www.google.com/maps/search/?api=1&query=${query}`, '_blank');
+        }
+
+        // Funzione per copiare il testo negli appunti (Step 1)
+        function copyToClipboard(elementId, msgId = 'copyMsg') {
+            const textToCopy = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const msgEl = document.getElementById(msgId);
+                msgEl.classList.remove('hidden');
+                setTimeout(() => { msgEl.classList.add('hidden'); }, 2000);
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const msgEl = document.getElementById(msgId);
+                    msgEl.classList.remove('hidden');
+                    setTimeout(() => { msgEl.classList.add('hidden'); }, 2000);
+                } catch (err) { }
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // Funzione per copiare un testo diretto (Step 1 - Nameserver)
+        function copyTextDirectly(text, msgId) {
+            navigator.clipboard.writeText(text).then(() => {
+                const msgEl = document.getElementById(msgId);
+                msgEl.classList.remove('hidden');
+                setTimeout(() => { msgEl.classList.add('hidden'); }, 2000);
+            }).catch(err => {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const msgEl = document.getElementById(msgId);
+                    msgEl.classList.remove('hidden');
+                    setTimeout(() => { msgEl.classList.add('hidden'); }, 2000);
+                } catch (e) {}
+                document.body.removeChild(textArea);
+            });
+        }
+
+        // Reset dell'app per una nuova ricerca
+        function resetApp() {
+            currentDomain = '';
+            currentIp = '';
+            document.getElementById('urlInput').value = '';
+            document.getElementById('geoCoordsInput').value = '';
+            document.getElementById('stepsContainer').classList.add('hidden');
+            document.getElementById('topResetBtn').classList.add('hidden');
+            document.getElementById('advSearchContainer').classList.add('hidden');
+            document.getElementById('advancedSearchCard').classList.add('hidden');
+            
+            const geoPage = document.getElementById('geolocalizationPage');
+            if (geoPage) geoPage.classList.add('hidden');
+            document.getElementById('mainInputArea').classList.remove('hidden');
+            
+            document.getElementById('step2MainHeader').classList.add('hidden');
+            document.getElementById('step2Container').classList.add('hidden');
+            document.getElementById('submitBtn').disabled = false;
+            document.getElementById('submitBtn').classList.remove('opacity-70', 'cursor-not-allowed');
+            document.getElementById('urlInput').focus();
+        }
+    </script>
+</body>
+</html>

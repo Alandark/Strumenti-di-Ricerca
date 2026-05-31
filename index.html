@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strumenti di Ricerca</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-image: linear-gradient(rgba(17, 24, 39, 0.6), rgba(17, 24, 39, 0.8)), url('Sfondo1.png');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+        }
+        /* Stile per la scrollbar per un look più moderno */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1f2937;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4b5563;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6b7280;
+        }
+        .page {
+            transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+        .page.hidden {
+            opacity: 0;
+            transform: scale(0.98);
+            pointer-events: none;
+            position: absolute;
+            width: 100%;
+        }
+    </style>
+</head>
+<body class="text-gray-200 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-4xl relative">
+
+        <!-- Pagina Home -->
+        <div id="home-page" class="page">
+            <div class="text-center mb-8">
+                <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Strumenti di Ricerca</h1>
+                <p class="text-gray-200 font-medium mt-2">Una collezione di utility per le tue ricerche avanzate.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card per il Generatore di Dorks -->
+                <div id="dork-generator-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Generatore di Dorks</h2>
+                    <p class="text-gray-300 mt-2">Crea query Google avanzate per trovare informazioni specifiche.</p>
+                </div>
+                <!-- Card per Ricerca Libri e Documenti -->
+                <div id="book-tool-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Ricerca Libri e Documenti</h2>
+                    <p class="text-gray-300 mt-2">Trova libri, PDF e fogli Excel sul web o su un sito specifico</p>
+                </div>
+                <!-- Card per Macchina del Tempo -->
+                <div id="time-machine-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Macchina del Tempo</h2>
+                    <p class="text-gray-300 mt-2">Esplora la storia di un sito web su Internet Archive.</p>
+                </div>
+                 <!-- Card per Analisi Forense Immagini -->
+                 <div id="image-forensics-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Analisi Forense Immagini</h2>
+                    <p class="text-gray-300 mt-2">Analizza foto per scoprire manipolazioni attraverso Forensically e FotoForensics.</p>
+                </div>
+                <!-- Card per Ricerca Immagini Inversa (Spostata qui) -->
+                <a href="ImaInverse.html" class="block bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Ricerca Immagini Inversa</h2>
+                    <p class="text-gray-300 mt-2">Carica una foto per scoprire dove appare sul web tramite Google Lens e TinEye.</p>
+                </a>
+                <!-- Card per Ricerca e Geolocalizzazione Server -->
+                <a href="FindIP.html" class="block bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Ricerca e Geolocalizzazione</h2>
+                    <p class="text-gray-300 mt-2">Analizza DNS, estrapola Nameserver e localizza gli indirizzi IP dei siti web.</p>
+                </a>
+                <!-- Card per DorkScan (Spostata qui) -->
+                <a href="dorkscan.html" class="block bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">DorkScan</h2>
+                    <p class="text-gray-300 mt-2">Servizio avanzato per l'esecuzione di Google Dorks mirate.</p>
+                </a>
+                <!-- Card per Analizzatore di Sicurezza Web (Modificata senza target="_blank") -->
+                <a href="VerSic.html" class="block bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                    <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Analizzatore di Sicurezza Web</h2>
+                    <p class="text-gray-300 mt-2">Individua falle di sicurezza e configurazioni errate di un sito web.</p>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Pagina Hub Ricerca Libri e Documenti (nascosta) -->
+        <div id="book-search-hub-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                    <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="home-page">&larr; Home</button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Ricerca Libri e Documenti</h1>
+                        <p class="text-gray-200 font-medium mt-2">Scegli il tipo di risorsa che vuoi trovare.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Card per Ricerca Libri -->
+                    <div id="book-search-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Ricerca Libri</h2>
+                        <p class="text-gray-300 mt-2">Cerca libri su Internet Archive.</p>
+                    </div>
+                    <!-- Card per Ricerca Documenti -->
+                    <div id="document-search-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Ricerca Documenti PDF</h2>
+                        <p class="text-gray-300 mt-2">Cerca documenti PDF nel web.</p>
+                    </div>
+                    <!-- Card per Ricerca Fogli Excel -->
+                    <div id="excel-search-card" class="bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1 md:col-span-2">
+                        <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">Ricerca Fogli Excel</h2>
+                        <p class="text-gray-300 mt-2">Cerca file .xlsx, .xls e .csv.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagina Hub Analisi Forense Immagini (nascosta) -->
+        <div id="image-forensics-hub-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                    <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="home-page">&larr; Home</button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Analisi Forense Immagini</h1>
+                        <p class="text-gray-200 font-medium mt-2">Scegli il servizio di analisi che desideri utilizzare.</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Card per Forensically -->
+                    <a href="https://29a.ch/photo-forensics/#forensic-magnifier" target="_blank" rel="noopener noreferrer" class="block bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">
+                            Forensically
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-5 h-5 ml-1 mb-1 text-cyan-400 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </h2>
+                        <p class="text-gray-300 mt-2">Strumento avanzato per l'analisi dei pixel e metadati.</p>
+                    </a>
+                    <!-- Card per FotoForensics -->
+                    <a href="https://fotoforensics.com/" target="_blank" rel="noopener noreferrer" class="block bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-700 p-6 text-center hover:bg-gray-700/60 hover:border-cyan-400 transition duration-300 cursor-pointer transform hover:-translate-y-1">
+                        <h2 class="text-2xl font-bold text-cyan-300 drop-shadow-md">
+                            FotoForensics
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-5 h-5 ml-1 mb-1 text-cyan-400 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                        </h2>
+                        <p class="text-gray-300 mt-2">Specializzato in Error Level Analysis (ELA) e analisi dei metadati nascosti.</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagina Ricerca Libri (nascosta) -->
+        <div id="book-search-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                     <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="book-search-hub-page">&larr; Indietro</button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Ricerca Libri su Archive.org</h1>
+                        <p class="text-gray-200 font-medium mt-2">Inserisci il titolo del libro da cercare.</p>
+                    </div>
+                </div>
+                <form id="book-search-form" class="space-y-4">
+                    <div>
+                        <label for="book-title" class="block text-sm font-medium text-gray-300 mb-2">Titolo del libro o Nome dell'autore</label>
+                        <input type="text" id="book-title" name="book-title" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200" placeholder="Es: I Promessi Sposi oppure Alessandro Manzoni">
+                    </div>
+                    <div class="text-center pt-2 flex justify-center gap-4">
+                         <button type="submit" id="book-search-submit-button" class="w-auto bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                            Genera Dork di Ricerca
+                        </button>
+                        <button type="button" id="book-search-reset-button" class="w-auto bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 hidden">
+                            Nuova ricerca
+                        </button>
+                    </div>
+                </form>
+                <div id="book-results-container" class="mt-10 space-y-4"></div>
+            </div>
+        </div>
+        
+        <!-- Pagina Ricerca Documenti (nascosta) -->
+        <div id="document-search-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                    <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="book-search-hub-page">&larr; Indietro</button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Ricerca Documenti PDF</h1>
+                        <p class="text-gray-200 font-medium mt-2">Trova file PDF specifici nel web.</p>
+                    </div>
+                </div>
+                <form id="document-search-form" class="space-y-4">
+                    <div>
+                        <label for="doc-keywords" class="block text-sm font-medium text-gray-300 mb-2">Nome documento o parole chiave</label>
+                        <input type="text" id="doc-keywords" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200" placeholder="Es: report annuale intelligenza artificiale">
+                    </div>
+                    <div>
+                        <label for="doc-link" class="block text-sm font-medium text-gray-300 mb-2">Limita la ricerca a un link (opzionale)</label>
+                        <input type="text" id="doc-link" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200" placeholder="Es: ec.europa.eu">
+                    </div>
+                    <div>
+                        <label for="doc-domain-filter" class="block text-sm font-medium text-gray-300 mb-2">Filtra per tipo di sito (ignorato se il link è compilato)</label>
+                        <select id="doc-domain-filter" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200">
+                            <option value="">Tutto il Web</option>
+                            <option value="site:.it">Siti Italiani (.it)</option>
+                            <option value="site:.gov">Siti Governativi (.gov)</option>
+                            <option value="site:.com">Siti Internazionali (.com)</option>
+                            <option value="site:.org">Siti Organizzazioni (.org)</option>
+                            <option value="site:.edu">Siti Educativi (.edu)</option>
+                        </select>
+                    </div>
+                    <div class="text-center pt-2 flex justify-center gap-4">
+                         <button type="submit" id="document-search-submit-button" class="w-auto bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                            Genera Dork di Ricerca
+                        </button>
+                        <button type="button" id="document-search-reset-button" class="w-auto bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 hidden">
+                            Nuova ricerca
+                        </button>
+                    </div>
+                </form>
+                <div id="document-results-container" class="mt-10 space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Pagina Ricerca Fogli Excel (nascosta) -->
+        <div id="excel-search-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                    <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="book-search-hub-page">&larr; Indietro</button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Ricerca Fogli Excel</h1>
+                        <p class="text-gray-200 font-medium mt-2">Trova file .xlsx, .xls o .csv specifici nel web.</p>
+                    </div>
+                </div>
+                <form id="excel-search-form" class="space-y-4">
+                    <div>
+                        <label for="excel-keywords" class="block text-sm font-medium text-gray-300 mb-2">Nome file o parole chiave</label>
+                        <input type="text" id="excel-keywords" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200" placeholder="Es: bilancio 2023, lista contatti">
+                    </div>
+                    <div>
+                        <label for="excel-link" class="block text-sm font-medium text-gray-300 mb-2">Limita la ricerca a un link (opzionale)</label>
+                        <input type="text" id="excel-link" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200" placeholder="Es: istat.it">
+                    </div>
+                    <div>
+                        <label for="excel-domain-filter" class="block text-sm font-medium text-gray-300 mb-2">Filtra per tipo di sito (ignorato se il link è compilato)</label>
+                        <select id="excel-domain-filter" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200">
+                            <option value="">Tutto il Web</option>
+                            <option value="site:.it">Siti Italiani (.it)</option>
+                            <option value="site:.gov">Siti Governativi (.gov)</option>
+                            <option value="site:.com">Siti Internazionali (.com)</option>
+                            <option value="site:.org">Siti Organizzazioni (.org)</option>
+                            <option value="site:.edu">Siti Educativi (.edu)</option>
+                        </select>
+                    </div>
+                    <div class="text-center pt-2 flex justify-center gap-4">
+                         <button type="submit" id="excel-search-submit-button" class="w-auto bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                            Genera Dork di Ricerca
+                        </button>
+                        <button type="button" id="excel-search-reset-button" class="w-auto bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 hidden">
+                            Nuova ricerca
+                        </button>
+                    </div>
+                </form>
+                <div id="excel-results-container" class="mt-10 space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Pagina Generatore di Dorks (nascosta) -->
+        <div id="dork-generator-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                    <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="home-page">
+                            &larr; Home
+                        </button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Generatore di Google Dorks</h1>
+                        <p class="text-gray-200 font-medium mt-2">Trasforma la tua ricerca in query di livello esperto.</p>
+                    </div>
+                </div>
+                <form id="dork-form" class="space-y-6">
+                    <!-- Contenuto del form dorks riempito dal JS -->
+                </form>
+                <div id="results-container" class="mt-10 space-y-4"></div>
+            </div>
+        </div>
+
+        <!-- Pagina Macchina del Tempo (nascosta) -->
+        <div id="time-machine-page" class="page hidden">
+            <div class="w-full bg-gray-800/50 backdrop-blur-sm rounded-2xl shadow-2xl shadow-cyan-500/10 border border-gray-700 p-6 md:p-8">
+                <div class="relative flex flex-col items-center justify-center mb-8">
+                    <div class="w-full flex justify-start md:absolute md:left-0 md:top-1/2 md:-translate-y-1/2 mb-4 md:mb-0">
+                        <button class="back-button bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold py-2 px-3 rounded-lg transition duration-200" data-target="home-page">
+                            &larr; Home
+                        </button>
+                    </div>
+                    <div class="text-center w-full">
+                        <h1 class="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-100 drop-shadow-lg">Macchina del Tempo</h1>
+                        <p class="text-gray-200 font-medium mt-2">Esplora la storia di un sito web su Internet Archive.</p>
+                    </div>
+                </div>
+                <form id="time-machine-form" class="space-y-4">
+                    <div>
+                        <label for="url-input" class="block text-sm font-medium text-gray-300 mb-2">URL del sito da esplorare</label>
+                        <input id="url-input" type="text" placeholder="https://www.esempio.com" required class="w-full px-4 py-3 bg-gray-900 border border-gray-600 text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 transition-shadow" aria-label="URL da cercare">
+                    </div>
+                    <div class="text-center pt-2">
+                        <button type="submit" class="w-full md:w-auto bg-gradient-to-r from-cyan-600 to-blue-500 hover:from-cyan-700 hover:to-blue-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">
+                            Avvia Ricerca
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Gestione della Navigazione ---
+        const pages = {
+            'home-page': document.getElementById('home-page'),
+            'dork-generator-page': document.getElementById('dork-generator-page'),
+            'book-search-hub-page': document.getElementById('book-search-hub-page'),
+            'image-forensics-hub-page': document.getElementById('image-forensics-hub-page'),
+            'book-search-page': document.getElementById('book-search-page'),
+            'document-search-page': document.getElementById('document-search-page'),
+            'excel-search-page': document.getElementById('excel-search-page'),
+            'time-machine-page': document.getElementById('time-machine-page')
+        };
+
+        function showPage(pageId) {
+            Object.values(pages).forEach(page => page.classList.add('hidden'));
+            if (pages[pageId]) {
+                pages[pageId].classList.remove('hidden');
+            }
+        }
+
+        // Event listener per le card
+        document.getElementById('dork-generator-card').addEventListener('click', () => showPage('dork-generator-page'));
+        document.getElementById('book-tool-card').addEventListener('click', () => showPage('book-search-hub-page'));
+        document.getElementById('image-forensics-card').addEventListener('click', () => showPage('image-forensics-hub-page'));
+        document.getElementById('book-search-card').addEventListener('click', () => showPage('book-search-page'));
+        document.getElementById('document-search-card').addEventListener('click', () => showPage('document-search-page'));
+        document.getElementById('excel-search-card').addEventListener('click', () => showPage('excel-search-page'));
+        document.getElementById('time-machine-card').addEventListener('click', () => showPage('time-machine-page'));
+        
+        // Event listener per i bottoni "Indietro"
+        document.querySelectorAll('.back-button').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const targetPageId = e.currentTarget.getAttribute('data-target');
+                showPage(targetPageId);
+            });
+        });
+        
+        // --- Logica Ricerca Libri ---
+        const bookSearchForm = document.getElementById('book-search-form');
+        const bookSearchResetButton = document.getElementById('book-search-reset-button');
+        const bookResultsContainer = document.getElementById('book-results-container');
+        
+        bookSearchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('book-title').value.trim();
+            if (!title) {
+                bookResultsContainer.innerHTML = `<div class="text-center p-4 bg-red-900/50 border border-red-700 rounded-lg">Per favore, inserisci un titolo.</div>`;
+                return;
+            }
+            const bookDorks = [
+                `${title} site:archive.org`,
+                `"${title}" site:archive.org`,
+                `allintitle:"${title}" site:archive.org`
+            ];
+            displayDorkResults(bookDorks, bookResultsContainer);
+            bookSearchResetButton.classList.remove('hidden');
+        });
+
+        bookSearchResetButton.addEventListener('click', function() {
+            bookSearchForm.reset();
+            bookResultsContainer.innerHTML = '';
+            bookSearchResetButton.classList.add('hidden');
+        });
+        
+        // --- Logica Ricerca Documenti PDF ---
+        const documentSearchForm = document.getElementById('document-search-form');
+        const documentSearchResetButton = document.getElementById('document-search-reset-button');
+        const documentResultsContainer = document.getElementById('document-results-container');
+
+        documentSearchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const keywords = document.getElementById('doc-keywords').value.trim();
+            let link = document.getElementById('doc-link').value.trim();
+            const domainFilter = document.getElementById('doc-domain-filter').value;
+            
+            if (!keywords && !link) {
+                documentResultsContainer.innerHTML = `<div class="text-center p-4 bg-red-900/50 border border-red-700 rounded-lg">Inserisci almeno le parole chiave o un link.</div>`;
+                return;
+            }
+
+            let docDorks = [];
+            const filetype = "filetype:pdf";
+            let siteRestriction = '';
+
+            if (link) {
+                const site = link.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+                siteRestriction = `site:${site}`;
+            } else if (domainFilter) {
+                siteRestriction = domainFilter;
+            }
+            
+            if (link) {
+                const relatedModifier = `related:${link.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]}`;
+                docDorks.push(`${keywords} ${siteRestriction} ${filetype}`);
+                docDorks.push(`${keywords} ${relatedModifier} ${filetype}`);
+                docDorks.push(`"${keywords}" ${siteRestriction} ${filetype}`);
+                docDorks.push(`allintext:"${keywords}" ${siteRestriction} ${filetype}`);
+            } else {
+                docDorks.push(`${keywords} ${siteRestriction} ${filetype}`);
+                docDorks.push(`intitle:"${keywords}" ${siteRestriction} ${filetype}`);
+                docDorks.push(`intext:"${keywords}" ${siteRestriction} ${filetype}`);
+                docDorks.push(`inurl:"${keywords.split(' ')[0]}" ${siteRestriction} ${filetype}`);
+            }
+            
+            displayDorkResults(docDorks.map(d => d.trim().replace(/\s+/g, ' ')), documentResultsContainer);
+            documentSearchResetButton.classList.remove('hidden');
+        });
+
+        documentSearchResetButton.addEventListener('click', function() {
+            documentSearchForm.reset();
+            documentResultsContainer.innerHTML = '';
+            documentSearchResetButton.classList.add('hidden');
+        });
+
+        // --- Logica Ricerca Fogli Excel ---
+        const excelSearchForm = document.getElementById('excel-search-form');
+        const excelSearchResetButton = document.getElementById('excel-search-reset-button');
+        const excelResultsContainer = document.getElementById('excel-results-container');
+
+        excelSearchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const keywords = document.getElementById('excel-keywords').value.trim();
+            let link = document.getElementById('excel-link').value.trim();
+            const domainFilter = document.getElementById('excel-domain-filter').value;
+            
+            if (!keywords && !link) {
+                excelResultsContainer.innerHTML = `<div class="text-center p-4 bg-red-900/50 border border-red-700 rounded-lg">Inserisci almeno le parole chiave o un link.</div>`;
+                return;
+            }
+
+            let excelDorks = [];
+            const filetype = "(filetype:xlsx OR filetype:xls OR filetype:csv)";
+            let siteRestriction = '';
+
+            if (link) {
+                const site = link.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+                siteRestriction = `site:${site}`;
+            } else if (domainFilter) {
+                siteRestriction = domainFilter;
+            }
+            
+            if (link) {
+                const relatedModifier = `related:${link.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0]}`;
+                excelDorks.push(`${keywords} ${siteRestriction} ${filetype}`);
+                excelDorks.push(`${keywords} ${relatedModifier} ${filetype}`);
+                excelDorks.push(`"${keywords}" ${siteRestriction} ${filetype}`);
+                excelDorks.push(`allintext:"${keywords}" ${siteRestriction} ${filetype}`);
+            } else {
+                excelDorks.push(`${keywords} ${siteRestriction} ${filetype}`);
+                excelDorks.push(`intitle:"${keywords}" ${siteRestriction} ${filetype}`);
+                excelDorks.push(`intext:"${keywords}" ${siteRestriction} ${filetype}`);
+                excelDorks.push(`inurl:"${keywords.split(' ')[0]}" ${siteRestriction} ${filetype}`);
+            }
+            
+            displayDorkResults(excelDorks.map(d => d.trim().replace(/\s+/g, ' ')), excelResultsContainer);
+            excelSearchResetButton.classList.remove('hidden');
+        });
+
+        excelSearchResetButton.addEventListener('click', function() {
+            excelSearchForm.reset();
+            excelResultsContainer.innerHTML = '';
+            excelSearchResetButton.classList.add('hidden');
+        });
+
+
+        // --- Logica del Generatore di Dorks ---
+        const dorkForm = document.getElementById('dork-form');
+        const dorkFormContent = `
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-300 mb-2">Inserisci le parole chiave della ricerca</label>
+                <textarea id="description" name="description" rows="4" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 transition duration-200" placeholder="Es: report finanziari Apple 2023, vulnerabilità apache..."></textarea>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="specific-site" class="block text-sm font-medium text-gray-300 mb-2">Sito specifico (opzionale)</label>
+                    <input type="text" id="specific-site" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500" placeholder="es: github.com">
+                </div>
+                <div>
+                    <label for="site-extension" class="block text-sm font-medium text-gray-300 mb-2">Estensione (opzionale)</label>
+                    <input type="text" id="site-extension" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500" placeholder="es: .gov">
+                </div>
+                <div>
+                    <label for="file-type" class="block text-sm font-medium text-gray-300 mb-2">Tipo di file (opzionale)</label>
+                    <input type="text" id="file-type" class="w-full bg-gray-900 border border-gray-600 rounded-lg p-3 focus:ring-2 focus:ring-cyan-500" placeholder="es: sql">
+                </div>
+            </div>
+            <div class="text-center pt-4 flex justify-center gap-4">
+                <button type="submit" id="dork-generator-submit-button" class="w-auto bg-gradient-to-r from-cyan-600 to-teal-500 hover:from-cyan-700 hover:to-teal-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300">Genera Dork di Ricerca</button>
+                <button type="button" id="dork-generator-reset-button" class="w-auto bg-gray-600 hover:bg-gray-500 text-white font-bold py-3 px-8 rounded-lg shadow-lg transform hover:scale-105 transition duration-300 hidden">Nuova ricerca</button>
+            </div>`;
+        dorkForm.innerHTML = dorkFormContent;
+        const dorkGeneratorResetButton = document.getElementById('dork-generator-reset-button');
+        const resultsContainer = document.getElementById('results-container');
+        
+        dorkForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const description = document.getElementById('description').value.trim();
+            if (!description) {
+                displayDorkResults([], resultsContainer, true);
+                return;
+            }
+            let specificSite = document.getElementById('specific-site').value.trim();
+            const siteExtension = document.getElementById('site-extension').value.trim();
+            const fileType = document.getElementById('file-type').value.trim();
+            if (specificSite) specificSite = specificSite.replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+            const dorks = generateDorks(description, specificSite, siteExtension, fileType);
+            displayDorkResults(dorks, resultsContainer);
+            dorkGeneratorResetButton.classList.remove('hidden');
+        });
+
+        dorkGeneratorResetButton.addEventListener('click', function() {
+            dorkForm.reset();
+            resultsContainer.innerHTML = '';
+            dorkGeneratorResetButton.classList.add('hidden');
+        });
+
+        function generateDorks(description, specificSite, siteExtension, fileType) {
+            const dorks = [];
+            const descLower = description.toLowerCase();
+            let siteModifier = specificSite ? `site:${specificSite}` : (siteExtension ? `site:${siteExtension.startsWith('.') ? '' : '.'}${siteExtension}` : '');
+            const fileTypeModifier = fileType ? `filetype:${fileType}` : '';
+            const allKeywords = description.split(' ').filter(word => word.length > 1);
+            const primaryKeywords = allKeywords.slice(0, 4).join(' ');
+            const yearMatch = descLower.match(/\b(20[1-2][0-9])\b/);
+            const year = yearMatch ? yearMatch[0] : null;
+
+            dorks.push(`${allKeywords.join(' ')} ${siteModifier} ${fileTypeModifier}`);
+            dorks.push(`intitle:"${primaryKeywords}" ${siteModifier} ${fileTypeModifier}`);
+            dorks.push(`intext:"${description}" ${siteModifier} ${fileTypeModifier}`);
+            
+            const urlKeyword = allKeywords.find(k => ['report', 'doc', 'login', 'admin', 'dashboard', 'api'].includes(k.toLowerCase())) || allKeywords[0] || '';
+            
+            // Rimuove la parola usata per l'inurl dalle restanti parole chiave per evitare la ripetizione
+            const remainingKeywords = allKeywords.filter(k => k !== urlKeyword).slice(0, 3).join(' ');
+            const searchTerms = remainingKeywords ? `"${remainingKeywords}"` : '';
+            dorks.push(`inurl:"${urlKeyword}" ${searchTerms} ${siteModifier} ${fileTypeModifier}`);
+            
+            let smartComboDork = `allintitle:"${primaryKeywords}" `;
+            let contextClues = [];
+            if (descLower.includes('report') || descLower.includes('documento')) contextClues.push('inurl:report', 'inurl:document');
+            if (descLower.includes('presentazione') || descLower.includes('slide')) contextClues.push('filetype:ppt', 'filetype:pptx');
+            if (descLower.includes('riservato') || descLower.includes('confidenziale')) contextClues.push('intext:riservato', 'intext:confidenziale');
+            if (descLower.includes('database') || descLower.includes('password')) contextClues.push('intext:password', 'inurl:login');
+            if (contextClues.length > 0) {
+                smartComboDork += `(${contextClues.join(' OR ')}) `;
+            } else {
+                smartComboDork += `intext:"${primaryKeywords}" `;
+            }
+            dorks.push(`${smartComboDork} ${siteModifier} ${fileTypeModifier}`);
+            let ultimateDork = `allintitle:${primaryKeywords} `;
+            if (allKeywords.length > 1) {
+                ultimateDork += `"${allKeywords[0]} AROUND(20) ${allKeywords[allKeywords.length - 1]}" `;
+            }
+            if (!fileType) {
+                 ultimateDork += `(ext:pdf OR ext:docx OR ext:xlsx OR ext:sql OR ext:log) `;
+            } else {
+                 ultimateDork += `(filetype:${fileType} OR filetype:zip) `;
+            }
+            if (year) {
+                ultimateDork += `after:${year}-01-01 before:${parseInt(year) + 1}-01-01 `;
+            }
+            if (!specificSite) {
+                ultimateDork += `-site:youtube.com -site:*.pinterest.* -site:*.facebook.com -inurl:(shop|store|blog|jobs) `;
+            }
+            if (descLower.includes('aws') || descLower.includes('s3')) {
+                 ultimateDork += `OR site:storage.googleapis.com OR site:blob.core.windows.net `;
+            }
+            ultimateDork += `${siteModifier}`;
+            dorks.push(ultimateDork);
+            
+            return dorks.map(d => d.replace(/\s\s+/g, ' ').trim());
+        }
+
+        // --- Logica Macchina del Tempo ---
+        const timeMachineForm = document.getElementById('time-machine-form');
+        timeMachineForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const urlInput = document.getElementById('url-input');
+            const userUrl = urlInput.value.trim();
+            if (userUrl) {
+                const archiveUrl = `https://web.archive.org/web/*/${userUrl}`;
+                window.open(archiveUrl, '_blank');
+            } else {
+                urlInput.focus();
+            }
+        });
+
+        // --- Funzioni Helper riutilizzabili ---
+        function displayDorkResults(dorks, container, isEmpty = false) {
+            container.innerHTML = '';
+            if (isEmpty) {
+                 container.innerHTML = `<div class="text-center p-4 bg-red-900/50 border border-red-700 rounded-lg">Per favore, inserisci i dati richiesti.</div>`;
+                 return;
+            }
+
+            // Aggiunge il banner di istruzioni per l'utente
+            const instructionBlock = document.createElement('div');
+            instructionBlock.className = 'flex flex-wrap items-center justify-center gap-2 bg-gray-800/80 border border-cyan-500/50 rounded-lg p-3 mb-6 text-sm md:text-base text-gray-200 shadow-md';
+            instructionBlock.innerHTML = `
+                <span>👉 Clicca sulla lente</span>
+                <span class="bg-cyan-600 p-1.5 rounded-md inline-flex shadow-sm"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="white" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg></span>
+                <span>accanto alla query per avviare la ricerca automatica su Google.</span>
+            `;
+            container.appendChild(instructionBlock);
+
+            dorks.forEach((dork) => {
+                const resultEl = document.createElement('div');
+                resultEl.className = 'bg-gray-900 border border-gray-700 rounded-lg p-4 flex items-center justify-between gap-4';
+                
+                const dorkText = document.createElement('code');
+                dorkText.className = 'text-teal-300 text-sm md:text-base break-all mr-auto';
+                dorkText.textContent = dork;
+                
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'flex items-center gap-2 flex-shrink-0';
+
+                const searchButton = document.createElement('a');
+                searchButton.href = `https://www.google.com/search?q=${encodeURIComponent(dork)}`;
+                searchButton.target = '_blank';
+                searchButton.rel = 'noopener noreferrer';
+                searchButton.title = 'Cerca su Google';
+                searchButton.className = 'bg-cyan-600 hover:bg-cyan-500 text-white font-semibold p-2 rounded-lg transition duration-200';
+                searchButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16"><path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/></svg>`;
+
+                const copyButton = document.createElement('button');
+                copyButton.title = 'Copia Dork';
+                copyButton.className = 'bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold p-2 rounded-lg transition';
+                copyButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16"><path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/><path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/></svg>`;
+                copyButton.onclick = () => copyToClipboard(dork, copyButton);
+                
+                buttonContainer.appendChild(searchButton);
+                buttonContainer.appendChild(copyButton);
+                resultEl.appendChild(dorkText);
+                resultEl.appendChild(buttonContainer);
+                container.appendChild(resultEl);
+            });
+        }
+
+        function copyToClipboard(text, button) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const originalContent = button.innerHTML;
+                button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-lg text-green-400" viewBox="0 0 16 16"><path d="M12.736 3.97a.733.733 0 0 1 1.047 0c.286.289.29.756.01 1.05L7.88 12.01a.733.733 0 0 1-1.065.02L3.217 8.384a.757.757 0 0 1 0-1.06.733.733 0 0 1 1.047 0l3.052 3.093 5.4-6.425a.247.247 0 0 1 .02-.022z"/></svg>`;
+                setTimeout(() => { button.innerHTML = originalContent; }, 2000);
+            } catch (err) { console.error('Impossibile copiare il testo:', err); }
+            document.body.removeChild(textArea);
+        }
+
+        // Avvia l'app sulla home page
+        showPage('home-page');
+    </script>
+</body>
+</html>
